@@ -30,8 +30,19 @@ import { getData } from "@/utils/utils";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/lib/supabaseClient";
 import LoadingScreen from "@/components/LoadingScreen";
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/router";
 
 export default function Pagos() {
+  const { user, loading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading]);
+
   const {
     isOpen: isModalOpen,
     onOpen: openModal,
@@ -46,7 +57,7 @@ export default function Pagos() {
   const [gastos, setGastos] = useState([]);
   const [clientes, setClientes] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loadingPage, setLoading] = useState(true);
 
   const [form, setForm] = useState({
     tipo: "cobro",
@@ -62,6 +73,10 @@ export default function Pagos() {
 
   console.log(gastos);
   useEffect(() => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     fetchPagos();
     fetchGastos();
     fetchClientes();
@@ -250,7 +265,7 @@ export default function Pagos() {
     }
   };
 
-  if (loading) {
+  if (loadingPage) {
     return (
       <DashboardLayout>
         <Heading color="green.700" mb={5}>

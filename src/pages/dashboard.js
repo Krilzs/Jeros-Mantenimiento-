@@ -1,7 +1,19 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { useUser } from "@/context/UserContext";
 import { Heading, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
+  const { user, loading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading]);
+
   return (
     <DashboardLayout>
       <Heading color="green.700" mb={4}>

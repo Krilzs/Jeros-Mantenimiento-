@@ -11,9 +11,20 @@ import { useDisclosure } from "@chakra-ui/react";
 import ClientViewModal from "@/components/clients/ClientViewModal";
 
 import ClientsActions from "@/components/clients/ClientsActions";
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/router";
 export default function Clients() {
+  const { user, loading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading]);
+
   const [clients, setClients] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingPage, setLoading] = useState(true);
   const [filtro, setFiltro] = useState("");
   const toast = useToast();
   const [clienteEditando, setClienteEditando] = useState(null);
@@ -87,6 +98,10 @@ export default function Clients() {
   async function fetchClientes() {
     setLoading(true);
     const token = await getData(supabase);
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     try {
       const res = await fetch("/api/clients/get", {
         headers: {
@@ -225,7 +240,7 @@ export default function Clients() {
       <Text color="gray.600">
         Maneja y controla la informacion de tus clientes.
       </Text>
-      {loading ? (
+      {loadingPage ? (
         <LoadingScreen fullscreen={false} />
       ) : (
         <>

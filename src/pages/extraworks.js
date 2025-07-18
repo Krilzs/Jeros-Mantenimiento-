@@ -1,10 +1,19 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Heading, Text } from "@chakra-ui/react";
 import TrabajosExtrasPage from "@/components/extraworks/ExtraWorkTable";
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Extras() {
+  const { user, loading } = useUser();
+  const router = useRouter();
 
-  
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading]);
 
   return (
     <DashboardLayout>
