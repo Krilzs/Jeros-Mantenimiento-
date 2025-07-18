@@ -23,6 +23,14 @@
 
 ---
 
+## 🌐 Demo en vivo
+
+Probá la app desplegada en:
+
+➡️ [https://jeros-mantenimiento.vercel.app](https://jeros-mantenimiento.vercel.app)
+
+---
+
 ## 📸 Capturas (próximamente)
 
 > Se agregarán imágenes de la interfaz para visualizar las secciones en funcionamiento.
@@ -31,17 +39,21 @@
 
 ## ⚙️ Tecnologías Utilizadas
 
-- **Frontend:** React + Chakra UI
-- **Backend:** Next.js API Routes
-- **Base de datos & Auth:** Supabase (con policies y JWT)
-- **Gestión de estado:** React Hooks (`useState`, `useEffect`, `useDisclosure`)
-- **Estilos:** Chakra UI con colores personalizados (`brand`, `primary`)
-- **Autenticación:** Supabase + Headers con token
-- **Deploy:** Render o Vercel
+- **Frontend:** React + Chakra UI  
+- **Backend:** Next.js API Routes  
+- **Base de datos & Auth:** Supabase (con policies y JWT)  
+- **Gestión de estado:** React Hooks (`useState`, `useEffect`, `useDisclosure`)  
+- **Estilos:** Chakra UI con colores personalizados (`brand`, `primary`)  
+- **Autenticación:** Supabase + Headers con token  
+- **Deploy:** Vercel  
 
 ---
 
-## 🚀 Instalación local
+
+
+## 🛠️ Desarrollo local
+
+Para correr el proyecto en tu máquina local:
 
 ```bash
 # Cloná el repositorio
@@ -51,9 +63,9 @@ cd jeros-mantenimiento
 # Instalá las dependencias
 npm install
 
-# Copiá y configurá las variables de entorno
+# Copiá el archivo de variables de entorno y configurá tus credenciales Supabase
 cp .env.example .env.local
-# 👉 Ingresá tu SUPABASE_URL y SUPABASE_ANON_KEY
+# 👉 Configurá SUPABASE_URL y SUPABASE_ANON_KEY en .env.local
 
-# Corré el proyecto
+# Iniciá la aplicación en modo desarrollo
 npm run dev
