@@ -117,7 +117,7 @@ export default function ModalHistorial({ isOpen, onClose }) {
   };
 
   const totalPagos = historial
-    .filter((item) => item.tipo === "Pago")
+    .filter((item) => item.tipo === "Cobro")
     .reduce((sum, item) => sum + item.monto, 0);
 
   const totalGastos = historial
@@ -166,16 +166,16 @@ export default function ModalHistorial({ isOpen, onClose }) {
                   borderWidth="1px"
                 >
                   <Text color="green.600" fontWeight="bold">
-                    Total Cobro: ${totalPagos.toFixed(2)}
+                    Total Cobro: ${totalPagos.toLocaleString("es-AR")}
                   </Text>
                   <Text color="red.500" fontWeight="bold">
-                    Total Gastos: ${totalGastos.toFixed(2)}
+                    Total Gastos: ${totalGastos.toLocaleString("es-AR")}
                   </Text>
                   <Text
                     color={balance >= 0 ? "green.700" : "red.600"}
                     fontWeight="bold"
                   >
-                    Balance: ${balance.toFixed(2)}
+                    Balance: ${balance.toLocaleString("es-AR")}
                   </Text>
                 </HStack>
 
