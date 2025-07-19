@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -15,12 +15,21 @@ import {
 import { supabase } from "../utils/lib/supabaseClient";
 import { useRouter } from "next/router";
 import { translateError } from "@/utils/lib/errors";
+import { useUser } from "@/context/UserContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+
+  const { user, loading } = useUser();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, loading]);
 
   const handleLogin = async () => {
     setError("");

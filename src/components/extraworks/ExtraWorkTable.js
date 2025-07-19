@@ -56,7 +56,6 @@ export default function TrabajosExtrasPage() {
         credentials: "include",
       });
       const data = await res.json();
-      console.log(data);
       setTrabajos(data);
       setLoading(false);
     } catch (error) {
@@ -145,6 +144,8 @@ export default function TrabajosExtrasPage() {
         monto_cobrado: "",
         fecha: "",
       });
+
+      fetchTrabajos();
       onClose();
       setError(null);
     } catch (error) {

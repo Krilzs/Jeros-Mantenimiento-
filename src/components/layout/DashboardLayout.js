@@ -58,7 +58,7 @@ export default function DashboardLayout({ children }) {
           />
           <SidebarLink label="Clientes" icon={FaUser} href="/clientes" />
           <SidebarLink
-            label="Pagos y Gastos"
+            label="Cobros y Gastos"
             icon={FaMoneyBill}
             href="/pagos"
           />

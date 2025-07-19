@@ -19,6 +19,7 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Button,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/lib/supabaseClient";
@@ -83,13 +84,6 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
     fetchPagos();
     fetchMensualidades();
   }, [cliente, isOpen]);
-
-  // Formatea fecha dd/mm/yyyy
-  const formatFecha = (fecha) => {
-    if (!fecha) return "-";
-    const d = new Date(fecha);
-    return d.toLocaleDateString("es-AR");
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl" scrollBehavior="inside">
@@ -164,29 +158,40 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {mensualidades.map((m) => (
-                        <Tr key={m.id}>
-                          <Td>{`${m.mes}/${m.anio}`}</Td>
-                          <Td isNumeric>${m.monto_mensual.toLocaleString()}</Td>
-                          <Td isNumeric>${m.monto_pagado.toLocaleString()}</Td>
-                          <Td width={"300px"}>
-                            {m.monto_pagado == 0
-                              ? "No pagado aun"
-                              : m.fecha_pago.split("-").reverse().join("/")}
-                          </Td>
-                          <Td>
-                            {m.monto_pagado >= m.monto_mensual ? (
-                              <Text color="green.600" fontWeight="bold">
-                                Pagado
-                              </Text>
-                            ) : (
-                              <Text color="red.600" fontWeight="bold">
-                                Adeudado
-                              </Text>
-                            )}
-                          </Td>
-                        </Tr>
-                      ))}
+                      {mensualidades
+                        .sort((a, b) => {
+                          if (a.anio === b.anio) {
+                            return a.mes - b.mes;
+                          }
+                          return a.anio - b.anio;
+                        })
+                        .map((m) => (
+                          <Tr key={m.id}>
+                            <Td>{`${m.mes}/${m.anio}`}</Td>
+                            <Td isNumeric>
+                              ${m.monto_mensual.toLocaleString()}
+                            </Td>
+                            <Td isNumeric>
+                              ${m.monto_pagado.toLocaleString()}
+                            </Td>
+                            <Td width={"300px"}>
+                              {m.monto_pagado == 0
+                                ? "No pagado aun"
+                                : m.fecha_pago.split("-").reverse().join("/")}
+                            </Td>
+                            <Td>
+                              {m.monto_pagado >= m.monto_mensual ? (
+                                <Text color="green.600" fontWeight="bold">
+                                  Pagado
+                                </Text>
+                              ) : (
+                                <Text color="red.600" fontWeight="bold">
+                                  Adeudado
+                                </Text>
+                              )}
+                            </Td>
+                          </Tr>
+                        ))}
                     </Tbody>
                   </Table>
                 )}

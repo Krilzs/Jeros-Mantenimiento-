@@ -22,6 +22,7 @@ export default async function handler(req, res) {
       .select("id")
       .eq("cliente_id", cliente.id)
       .eq("mes", mesActual)
+      .eq("anio", anioActual)
       .maybeSingle();
 
     if (!yaExiste) {

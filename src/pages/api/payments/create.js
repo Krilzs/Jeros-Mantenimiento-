@@ -18,7 +18,6 @@ export default async function handler(req, res) {
   }
 
   const { monto_pagado, fecha_pago, cliente_id, mes_asignado } = req.body;
-  console.log(fecha_pago);
 
   if (!monto_pagado || !fecha_pago || !cliente_id) {
     return res.status(400).json({ error: "Faltan campos obligatorios" });
@@ -57,26 +56,44 @@ export default async function handler(req, res) {
       .select("monto_pagado")
       .eq("cliente_id", cliente_id)
       .eq("mes", mes)
+      .eq("anio", anio)
       .single();
 
+    console.log("ACTUAL", actual);
+
     if (errActual) {
-      console.error("Error obteniendo el pago actual:", errActual);
-      return;
-    }
+      const { error: errorPago } = await supabase
+        .from("pagos_mensualidades")
+        .insert([
+          {
+            cliente_id: cliente_id,
+            mes: mes,
+            anio: anio,
+            monto_mensual: monto_pagado,
+            monto_pagado: monto_pagado,
+            fecha_pago: fecha_pago,
+          },
+        ]);
 
-    const nuevoMonto = actual.monto_pagado + monto_pagado;
+      if (errorPago) {
+        console.error("Error creando pago Atrasado:", errorPago);
+        return res.status(500).json({ error: errorPago.message });
+      }
+    } else if (!errActual) {
+      const nuevoMonto = actual.monto_pagado + monto_pagado;
 
-    const { error: errUpdate } = await supabase
-      .from("pagos_mensualidades")
-      .update({ monto_pagado: nuevoMonto, fecha_pago: fecha_pago })
-      .eq("cliente_id", cliente_id)
-      .eq("mes", mes);
+      const { error: errUpdate } = await supabase
+        .from("pagos_mensualidades")
+        .update({ monto_pagado: nuevoMonto, fecha_pago: fecha_pago })
+        .eq("cliente_id", cliente_id)
+        .eq("mes", mes);
 
-    if (errUpdate) {
-      return res.status(500).json({
-        error: "Error al actualizar pagos_mensualidades",
-        detalle: errorMensualidad.message,
-      });
+      if (errUpdate) {
+        return res.status(500).json({
+          error: "Error al actualizar pagos_mensualidades",
+          detalle: errorMensualidad.message,
+        });
+      }
     }
   }
 

@@ -63,9 +63,7 @@ export default function ClientesTable({
             <Th onClick={() => handleOrden("monto_mensual")} cursor="pointer">
               Monto mensual
             </Th>
-            <Th onClick={() => handleOrden("ultimo_pago")} cursor="pointer">
-              Último pago
-            </Th>
+            <Th>Último pago</Th>
             <Th>Acciones</Th>
           </Tr>
         </Thead>
@@ -87,7 +85,9 @@ export default function ClientesTable({
                 </Td>
                 <Td>{cliente.nombre}</Td>
                 <Td>{cliente.lote}</Td>
-                <Td>${cliente.monto_mensual}</Td>
+                <Td fontWeight={"bold"} color={"brand.800"}>
+                  ${cliente.monto_mensual.toLocaleString()}
+                </Td>
                 <Td>
                   {cliente.ultimo_pago
                     ? cliente.ultimo_pago
@@ -104,23 +104,16 @@ export default function ClientesTable({
                     mr={2}
                     onClick={() => onView(cliente)}
                   >
-                    Ver
+                    Datos del cliente
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
                     mr={2}
+                    colorScheme="brand"
                     onClick={() => onEdit(cliente)}
                   >
-                    Editar Valor
-                  </Button>
-                  <Button
-                    size="sm"
-                    colorScheme="red"
-                    variant="ghost"
-                    onClick={() => onDelete(cliente)}
-                  >
-                    Borrar
+                    Editar Valor Mensual
                   </Button>
                 </Td>
               </Tr>

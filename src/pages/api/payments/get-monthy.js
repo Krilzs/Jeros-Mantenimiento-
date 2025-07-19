@@ -22,8 +22,6 @@ export default async function handler(req, res) {
     .eq("cliente_id", clienteId)
     .order("mes", { ascending: true });
 
-  console.log(data);
-
   if (error) {
     return res.status(500).json({ error: error.message });
   }

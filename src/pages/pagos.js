@@ -32,6 +32,11 @@ import { supabase } from "@/utils/lib/supabaseClient";
 import LoadingScreen from "@/components/LoadingScreen";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/router";
+import Balance from "@/components/payments/Balance";
+import Actions from "@/components/payments/PaymentActions";
+import PrincipalTable from "@/components/payments/PrincipalTable";
+import PaginationButtons from "@/components/PaginationButtons";
+import AddModal from "@/components/payments/AddPaymentModal";
 
 export default function Pagos() {
   const { user, loading } = useUser();
@@ -281,186 +286,34 @@ export default function Pagos() {
 
   return (
     <DashboardLayout>
+      <Heading color="green.700" mb={5}>
+        Cobros y Gastos
+      </Heading>
+      <Text color="gray.600">Resumen general sobre pagos de clientes.</Text>
       <Box mx="auto" p={4}>
-        <Box bg="gray.50" rounded="md" mb={4}>
-          <Text>Ingresos: ${ingresos}</Text>
-          <Text>Gastos: ${egresos}</Text>
-          <Text fontWeight="bold">Balance: ${balance}</Text>
-        </Box>
-        <Box display="flex" justifyContent="start" width={"100%"} gap={2}>
-          <Button colorScheme="blue" onClick={openModal} mb={4}>
-            Nuevo Movimiento
-          </Button>
-          <Button
-            variant={"outline"}
-            colorScheme="blue"
-            onClick={openHistoryModal}
-            mb={4}
-          >
-            Historial de Pagos
-          </Button>
-        </Box>
+        <Balance balance={balance} ingresos={ingresos} egresos={egresos} />
+        <Actions openModal={openModal} openHistoryModal={openHistoryModal} />
         <ModalHistorial
           isOpen={isHistoryOpen}
           onClose={closeHistoryModal}
           clienteId={form.cliente_id}
         />
-
-        <Table variant="simple" mt={6}>
-          <Thead>
-            <Tr>
-              <Th>Fecha</Th>
-              <Th>Tipo</Th>
-              <Th>Gasto/Cliente</Th>
-              <Th isNumeric>Monto</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {movimientosVisibles.map((m) => (
-              <Tr key={`${m.tipo}-${m.id}`}>
-                <Td>{m.fecha.split("-").reverse().join("/")}</Td>
-                <Td color={m.tipo === "gasto" ? "red.500" : "green.500"}>
-                  {m.tipo.toLocaleUpperCase()}
-                </Td>
-                <Td>{m.nombre}</Td>
-                <Td
-                  isNumeric
-                  color={m.tipo === "gasto" ? "red.500" : "green.500"}
-                >
-                  {m.tipo === "gasto" ? "-" : "+"}${m.monto}
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-        <Box mt={4} display="flex" justifyContent="center" gap={2}>
-          <Button
-            size={"sm"}
-            colorScheme={paginaActual === 1 ? "gray" : "brand"}
-            onClick={() => setPaginaActual((prev) => Math.max(prev - 1, 1))}
-            isDisabled={paginaActual === 1}
-          >
-            Anterior
-          </Button>
-          <Text px={2} display={"flex"} justifyContent="center" align="center">
-            Página {paginaActual} de {totalPaginas}
-          </Text>
-          <Button
-            size={"sm"}
-            colorScheme={paginaActual === totalPaginas ? "gray" : "brand"}
-            onClick={() =>
-              setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))
-            }
-            isDisabled={paginaActual === totalPaginas}
-          >
-            Siguiente
-          </Button>
-        </Box>
+        <PrincipalTable movimientosVisibles={movimientosVisibles} />
+        <PaginationButtons
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          setPaginaActual={setPaginaActual}
+        />
 
         {/* Modal para agregar movimiento */}
-        <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Registrar Movimiento</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <FormControl mb={3}>
-                <FormLabel>Tipo</FormLabel>
-                <Select
-                  value={form.tipo}
-                  onChange={(e) => setForm({ ...form, tipo: e.target.value })}
-                >
-                  <option value="cobro">Cobro</option>
-                  <option value="gasto">Gasto</option>
-                </Select>
-              </FormControl>
-              {form.tipo === "cobro" && (
-                <>
-                  <FormControl mb={3}>
-                    <FormLabel>Cliente</FormLabel>
-                    <Select
-                      value={form.cliente_id}
-                      onChange={(e) =>
-                        setForm({ ...form, cliente_id: e.target.value })
-                      }
-                    >
-                      <option value="">Seleccionar cliente</option>
-                      {clientes.map((cliente) => (
-                        <option key={cliente.id} value={cliente.id}>
-                          {cliente.nombre}
-                        </option>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  <FormControl display="flex" alignItems="center" mb={3}>
-                    <Checkbox
-                      isChecked={form.asignarMensualidad}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          asignarMensualidad: e.target.checked,
-                        })
-                      }
-                      mr={2}
-                    />
-                    <FormLabel mb={0}>Asignar a mensualidad</FormLabel>
-                  </FormControl>
-
-                  {form.asignarMensualidad && (
-                    <FormControl mb={3}>
-                      <FormLabel>Mes del corte (YYYY-MM)</FormLabel>
-                      <Input
-                        type="month"
-                        value={form.mes_asignado || ""}
-                        onChange={(e) =>
-                          setForm({ ...form, mes_asignado: e.target.value })
-                        }
-                      />
-                    </FormControl>
-                  )}
-                </>
-              )}
-              {form.tipo === "gasto" && (
-                <FormControl mb={3}>
-                  <FormLabel>Nombre de gasto</FormLabel>
-                  <Input
-                    type="text"
-                    value={form.nombre}
-                    onChange={(e) =>
-                      setForm({ ...form, nombre: e.target.value })
-                    }
-                  />
-                </FormControl>
-              )}
-              <FormControl mb={3}>
-                <FormLabel>Monto</FormLabel>
-
-                <Input
-                  type="number"
-                  value={form.monto}
-                  onChange={(e) => setForm({ ...form, monto: e.target.value })}
-                />
-              </FormControl>
-
-              <FormControl mb={3}>
-                <FormLabel>Fecha de realizacion</FormLabel>
-                <Input
-                  type="date"
-                  value={form.fecha}
-                  onChange={(e) => setForm({ ...form, fecha: e.target.value })}
-                />
-              </FormControl>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
-                Guardar
-              </Button>
-              <Button onClick={closeModal}>Cancelar</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <AddModal
+          form={form}
+          setForm={setForm}
+          handleSubmit={handleSubmit}
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+          clientes={clientes}
+        />
       </Box>
     </DashboardLayout>
   );
