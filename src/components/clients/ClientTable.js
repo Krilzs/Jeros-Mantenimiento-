@@ -9,12 +9,13 @@ import {
   Button,
   Checkbox,
 } from "@chakra-ui/react";
+import AddNewMonth from "./AddNewMonth";
+import { useState } from "react";
 
 export default function ClientesTable({
   clientes,
   onView,
   onEdit,
-  onDelete,
   seleccionados,
   toggleSeleccion,
   ordenarPor,
@@ -30,7 +31,18 @@ export default function ClientesTable({
       setOrdenAscendente(true);
     }
   };
+  const [modalOpen, setModalOpen] = useState(false);
+  const [clientInfo, setClientInfo] = useState(null);
 
+  const handleModalOpen = (cliente) => {
+    setClientInfo(cliente);
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setClientInfo(null);
+    setModalOpen(false);
+  };
   const clientesOrdenados = [...clientes].sort((a, b) => {
     const valorA = a[ordenarPor];
     const valorB = b[ordenarPor];
@@ -115,12 +127,24 @@ export default function ClientesTable({
                   >
                     Editar Valor Mensual
                   </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    mr={2}
+                    colorScheme="blue"
+                    onClick={() => handleModalOpen(cliente)}
+                  >
+                    Agendar Pago/Deuda
+                  </Button>
                 </Td>
               </Tr>
             ))
           )}
         </Tbody>
       </Table>
+      {modalOpen && (
+        <AddNewMonth cliente={clientInfo} onClose={handleModalClose} />
+      )}
     </TableContainer>
   );
 }

@@ -8,19 +8,23 @@ export default function PrincipalTable({ movimientosVisibles }) {
           <Th>Fecha</Th>
           <Th>Tipo</Th>
           <Th>Gasto/Cliente</Th>
-          <Th isNumeric>Monto</Th>
+          <Th isNumeric>Ingresos</Th>
+          <Th isNumeric>Egresos</Th>
         </Tr>
       </Thead>
       <Tbody>
         {movimientosVisibles.map((m) => (
-          <Tr key={`${m.tipo}-${m.id}`}>
+          <Tr sx={{p:0 , height:"fit-content"}} key={`${m.tipo}-${m.id}`}>
             <Td>{m.fecha.split("-").reverse().join("/")}</Td>
             <Td color={m.tipo === "gasto" ? "red.500" : "green.500"}>
               {m.tipo.toLocaleUpperCase()}
             </Td>
             <Td>{m.nombre}</Td>
-            <Td isNumeric color={m.tipo === "gasto" ? "red.500" : "green.500"}>
-              {m.tipo === "gasto" ? "-" : "+"}${m.monto}
+            <Td isNumeric color={"green.500"}>
+              {m.tipo !== "gasto" ? `$${m.monto}` : "-"}
+            </Td>
+            <Td isNumeric color={"red.500"}>
+              {m.tipo === "gasto" ? `$${m.monto}` : "-"}
             </Td>
           </Tr>
         ))}

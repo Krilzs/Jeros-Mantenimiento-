@@ -59,8 +59,6 @@ export default async function handler(req, res) {
       .eq("anio", anio)
       .single();
 
-    console.log("ACTUAL", actual);
-
     if (errActual) {
       const { error: errorPago } = await supabase
         .from("pagos_mensualidades")
@@ -80,7 +78,7 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: errorPago.message });
       }
     } else if (!errActual) {
-      const nuevoMonto = actual.monto_pagado + monto_pagado;
+      const nuevoMonto = parseInt(actual.monto_pagado) + parseInt(monto_pagado);
 
       const { error: errUpdate } = await supabase
         .from("pagos_mensualidades")
