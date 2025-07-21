@@ -36,7 +36,7 @@ export default async function handler(req, res) {
   const clienteIds = clientes.map((c) => c.id);
 
   if (clienteIds.length === 0) {
-    return res.status(200).json([]); // no hay clientes → no hay pagos
+    return res.status(200).json([]); // no hay clientes = no hay pagos
   }
 
   const { data, error } = await supabase

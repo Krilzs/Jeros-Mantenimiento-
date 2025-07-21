@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   const userId = userData.user.id;
 
-  // 1. Buscar los IDs de los clientes del usuario
+  // Buscar los IDs de los clientes del usuario
   const { data: clientes, error: clientesError } = await supabase
     .from("clientes")
     .select("id")
@@ -31,10 +31,10 @@ export default async function handler(req, res) {
   const clienteIds = clientes.map((c) => c.id);
 
   if (clienteIds.length === 0) {
-    return res.status(200).json([]); // no hay clientes → no hay pagos
+    return res.status(200).json([]); // no hay clientes = no hay pagos
   }
 
-  // 2. Traer todos los pagos hechos a esos clientes
+  // Traer todos los pagos hechos a esos clientes
   const { data, error } = await supabase
     .from("pagos")
     .select("id, fecha_pago, monto_pagado, cliente:cliente_id(nombre)")

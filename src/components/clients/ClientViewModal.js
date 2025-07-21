@@ -147,53 +147,81 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
                 ) : mensualidades.length === 0 ? (
                   <Text>No hay mensualidades registradas.</Text>
                 ) : (
-                  <Table variant="simple" size="sm">
-                    <Thead>
-                      <Tr>
-                        <Th>Mes/Año</Th>
-                        <Th isNumeric>Monto Mensual</Th>
-                        <Th isNumeric>Monto Pagado</Th>
-                        <Th>Fecha de Pago</Th>
-                        <Th>Estado</Th> {/* NUEVA COLUMNA */}
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {mensualidades
-                        .sort((a, b) => {
-                          if (a.anio === b.anio) {
-                            return a.mes - b.mes;
-                          }
-                          return a.anio - b.anio;
-                        })
-                        .map((m) => (
-                          <Tr key={m.id}>
-                            <Td>{`${m.mes}/${m.anio}`}</Td>
-                            <Td isNumeric>
-                              ${m.monto_mensual.toLocaleString()}
-                            </Td>
-                            <Td isNumeric>
-                              ${m.monto_pagado.toLocaleString()}
-                            </Td>
-                            <Td width={"300px"}>
-                              {m.monto_pagado == 0
-                                ? "No pagado aun"
-                                : m.fecha_pago.split("-").reverse().join("/")}
-                            </Td>
-                            <Td>
-                              {m.monto_pagado >= m.monto_mensual ? (
-                                <Text color="green.600" fontWeight="bold">
-                                  Pagado
-                                </Text>
-                              ) : (
-                                <Text color="red.600" fontWeight="bold">
-                                  Adeudado
-                                </Text>
-                              )}
-                            </Td>
-                          </Tr>
-                        ))}
-                    </Tbody>
-                  </Table>
+                  <>
+                    {/* CÁLCULO DEL SALDO */}
+                    {(() => {
+                      const totalMensual = mensualidades.reduce(
+                        (acc, m) => acc + m.monto_mensual,
+                        0
+                      );
+                      const totalPagado = mensualidades.reduce(
+                        (acc, m) => acc + m.monto_pagado,
+                        0
+                      );
+                      const diferencia = totalPagado - totalMensual;
+
+                      return (
+                        <Text fontWeight="bold" mb={2}>
+                          Saldo {diferencia >= 0 ? "a favor" : "pendiente"}:{" "}
+                          <span
+                            style={{ color: diferencia >= 0 ? "green" : "red" }}
+                          >
+                            ${Math.abs(diferencia).toLocaleString()}
+                          </span>
+                        </Text>
+                      );
+                    })()}
+
+                    <Table variant="simple" size="sm">
+                      <Thead>
+                        <Tr>
+                          <Th>Mes/Año</Th>
+                          <Th isNumeric>Monto Mensual</Th>
+                          <Th isNumeric>Monto Pagado</Th>
+                          <Th>Fecha de Pago</Th>
+                          <Th>Estado</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {mensualidades
+                          .sort((a, b) => {
+                            if (a.anio === b.anio) {
+                              return a.mes - b.mes;
+                            }
+                            return a.anio - b.anio;
+                          })
+                          .map((m) => (
+                            <Tr key={m.id}>
+                              <Td>{`${m.mes}/${m.anio}`}</Td>
+                              <Td isNumeric>
+                                ${m.monto_mensual.toLocaleString()}
+                              </Td>
+                              <Td isNumeric>
+                                ${m.monto_pagado.toLocaleString()}
+                              </Td>
+
+                              <Td width={"300px"}>
+                                {m.monto_pagado == 0
+                                  ? "No pagado aun"
+                                  : m.fecha_pago.split("-").reverse().join("/")}
+                              </Td>
+
+                              <Td>
+                                {m.monto_pagado >= m.monto_mensual ? (
+                                  <Text color="green.600" fontWeight="bold">
+                                    Pagado
+                                  </Text>
+                                ) : (
+                                  <Text color="red.600" fontWeight="bold">
+                                    Adeudado
+                                  </Text>
+                                )}
+                              </Td>
+                            </Tr>
+                          ))}
+                      </Tbody>
+                    </Table>
+                  </>
                 )}
               </TabPanel>
             </TabPanels>
