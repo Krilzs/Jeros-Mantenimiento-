@@ -23,7 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/lib/supabaseClient";
-import { getData } from "@/utils/utils";
+import { formatCashNumber, getData } from "@/utils/utils";
 
 export default function ClientViewModal({ isOpen, onClose, cliente }) {
   const [loading, setLoading] = useState(false);
@@ -129,8 +129,8 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
                             {pago.fecha_pago.split("-").reverse().join("/")}
                           </Td>
                           <Td>{pago.descripcion}</Td>
-                          <Td isNumeric>
-                            ${pago.monto_pagado.toLocaleString()}
+                          <Td>
+                            {formatCashNumber(pago.monto_pagado)}
                           </Td>
                         </Tr>
                       ))}
@@ -151,6 +151,8 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
                         (acc, m) => acc + m.monto_mensual,
                         0
                       );
+
+                      
                       const totalPagado = mensualidades.reduce(
                         (acc, m) => acc + m.monto_pagado,
                         0
@@ -163,7 +165,7 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
                           <span
                             style={{ color: diferencia >= 0 ? "green" : "red" }}
                           >
-                            ${Math.abs(diferencia).toLocaleString()}
+                            {formatCashNumber(diferencia)}
                           </span>
                         </Text>
                       );
@@ -190,11 +192,11 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
                           .map((m) => (
                             <Tr key={m.id}>
                               <Td>{`${m.mes}/${m.anio}`}</Td>
-                              <Td isNumeric>
-                                ${m.monto_mensual.toLocaleString()}
+                              <Td >
+                                {formatCashNumber(m.monto_mensual)}
                               </Td>
-                              <Td isNumeric>
-                                ${m.monto_pagado.toLocaleString()}
+                              <Td >
+                                {formatCashNumber(m.monto_pagado)}
                               </Td>
 
                               <Td width={"300px"}>

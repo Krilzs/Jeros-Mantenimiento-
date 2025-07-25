@@ -27,19 +27,22 @@ export default function Clients() {
     if (!loading && !user) {
       router.push("/login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loading]);
 
   const [clients, setClients] = useState([]);
+  // Loading para el contenido de la pagina, diferente al loading de la sesion (UserContext)
   const [loadingPage, setLoading] = useState(true);
   const [filtro, setFiltro] = useState("");
-  const toast = useCustomToast();
   const [clienteEditando, setClienteEditando] = useState(null);
-  const [seleccionados, setSeleccionados] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [seleccionados, setSeleccionados] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [ordenarPor, setOrdenarPor] = useState("nombre");
   const [ordenAscendente, setOrdenAscendente] = useState(true);
+  // Custom toast para notificaciones, elemento reutilizable custom de Chakra UI
+  const toast = useCustomToast();
 
   function toggleSeleccion(id) {
     setSeleccionados((prev) =>

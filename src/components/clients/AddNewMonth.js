@@ -118,7 +118,7 @@ const AddNewMonth = ({ cliente, onClose }) => {
                   <FormControl>
                     <FormLabel>Mes asignado</FormLabel>
                     <Input
-                      type="month"
+                      type="date"
                       name="mes_asignado"
                       value={form.mes_asignado}
                       onChange={(e) => handleChange(e)}
@@ -153,7 +153,7 @@ const AddNewMonth = ({ cliente, onClose }) => {
                   <FormControl>
                     <FormLabel>Mes Adeudado</FormLabel>
                     <Input
-                      type="month"
+                      type="date"
                       name="mes_asignado"
                       value={form.mes_asignado}
                       onChange={(e) => handleChange(e)}
