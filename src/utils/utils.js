@@ -31,3 +31,11 @@ export function sortBy(array, campo, orden = "asc") {
     return orden === "asc" ? valA - valB : valB - valA;
   });
 }
+
+
+export function formatCashNumber(num) {
+    return num.toLocaleString("es-AR", {
+      style: "currency",
+      currency: "ARS",
+    });
+  };

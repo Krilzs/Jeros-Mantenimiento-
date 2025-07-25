@@ -1,4 +1,5 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { formatCashNumber } from "@/utils/utils";
 
 export default function PrincipalTable({ movimientosVisibles }) {
   return (
@@ -21,10 +22,10 @@ export default function PrincipalTable({ movimientosVisibles }) {
             </Td>
             <Td>{m.nombre}</Td>
             <Td isNumeric color={"green.500"}>
-              {m.tipo !== "gasto" ? `$${m.monto}` : "-"}
+              {m.tipo !== "gasto" ? `${formatCashNumber(m.monto)}` : "-"}
             </Td>
             <Td isNumeric color={"red.500"}>
-              {m.tipo === "gasto" ? `$${m.monto}` : "-"}
+              {m.tipo === "gasto" ? `${formatCashNumber(m.monto)}` : "-"}
             </Td>
           </Tr>
         ))}
