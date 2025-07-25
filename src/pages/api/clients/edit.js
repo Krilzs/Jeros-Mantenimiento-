@@ -3,7 +3,7 @@
 import { createServerClient } from "@/utils/lib/supabaseServer";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
+  if (req.method !== "PUT") {
     return res.status(405).json({ error: "Método no permitido" });
   }
 

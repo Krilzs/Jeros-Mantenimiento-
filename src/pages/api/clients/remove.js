@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     .from("clientes")
     .delete()
     .eq("id", id)
-    .eq("usuario_id", user.id); // para asegurarte que solo elimina sus propios clientes
+    .eq("usuario_id", user.id); 
 
   console.log(deleteError);
 

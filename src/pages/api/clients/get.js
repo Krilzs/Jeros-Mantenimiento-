@@ -35,7 +35,7 @@ export default async function handler(req, res) {
         return {
           ...cliente,
           ultimo_pago: pagos ? new Date(pagos.fecha_pago) : null,
-          // Quitamos estado_pago
+
         };
       })
     );

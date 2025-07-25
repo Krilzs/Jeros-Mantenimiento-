@@ -108,7 +108,6 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
             </TabList>
 
             <TabPanels>
-              {/* PESTAÑA PAGOS */}
               <TabPanel>
                 {loading ? (
                   <Spinner size="lg" />
@@ -140,7 +139,6 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
                 )}
               </TabPanel>
 
-              {/* PESTAÑA MENSUALIDADES */}
               <TabPanel>
                 {loading ? (
                   <Spinner size="lg" />
@@ -148,7 +146,6 @@ export default function ClientViewModal({ isOpen, onClose, cliente }) {
                   <Text>No hay mensualidades registradas.</Text>
                 ) : (
                   <>
-                    {/* CÁLCULO DEL SALDO */}
                     {(() => {
                       const totalMensual = mensualidades.reduce(
                         (acc, m) => acc + m.monto_mensual,

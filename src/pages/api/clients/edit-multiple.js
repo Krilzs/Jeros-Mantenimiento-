@@ -2,7 +2,7 @@
 import { createServerClient } from "@/utils/lib/supabaseServer";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST")
+  if (req.method !== "PUT")
     return res.status(405).json({ error: "Método no permitido" });
 
   const token = req.headers.authorization?.replace("Bearer ", "");
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   if (userError || !user)
     return res.status(401).json({ error: "Usuario no autenticado" });
 
-  const clientes = req.body.clientes; // Array de objetos {id, monto_mensual}
+  const clientes = req.body.clientes;
 
   console.log(clientes);
 
@@ -36,7 +36,6 @@ export default async function handler(req, res) {
       continue;
     }
 
-    // Solo permitimos actualizar monto_mensual y que sea del usuario
     const { data, error } = await supabase
       .from("clientes")
       .update({ monto_mensual })
