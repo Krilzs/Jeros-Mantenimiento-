@@ -34,7 +34,6 @@ export default function DashboardLayout({ children }) {
     if (error) {
       console.error("Error cerrando sesión:", error.message);
     } else {
-      // Opcional: redirigir a login u otra página
       window.location.href = "/login";
     }
   };

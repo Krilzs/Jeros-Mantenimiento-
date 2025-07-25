@@ -102,7 +102,7 @@ export default function ModalHistorial({ isOpen, onClose }) {
       );
 
       setHistorial(combinado);
-      setPage(1); // reset paginación
+      setPage(1);
     } catch (error) {
       toast({
         title: "Error",
@@ -157,7 +157,6 @@ export default function ModalHistorial({ isOpen, onClose }) {
 
             {historial.length > 0 ? (
               <>
-                {/* Resumen financiero */}
                 <HStack
                   justify="space-between"
                   bg="gray.50"

@@ -51,9 +51,8 @@ export default async function handler(req, res) {
   const clienteId = clienteCreado[0].id;
 
   const ahora = new Date();
-  const mes = ahora.getMonth() + 1; // getMonth() devuelve 0–11
+  const mes = ahora.getMonth() + 1; 
   const anio = ahora.getFullYear();
-  // o el valor que uses dinámicamente
 
   const { error: errorPago } = await supabase
     .from("pagos_mensualidades")

@@ -71,13 +71,11 @@ export default function CreateClientModal({
         isClosable: true,
       });
 
-      // Limpia y cierra
       setNombre("");
       setNumeroLote("");
       setMontoMensual("");
       onClose();
 
-      // Avisar al padre
 
       onClientCreated(data);
     } catch (error) {

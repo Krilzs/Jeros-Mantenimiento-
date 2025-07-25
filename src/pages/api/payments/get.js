@@ -19,8 +19,6 @@ export default async function handler(req, res) {
 
   const supabase = createServerClient({ token });
 
-  // Podés validar usuario con supabase.auth.getUser(token) si querés
-
   const { data, error } = await supabase
     .from("pagos")
     .select("id, fecha_pago, monto_pagado,descripcion")

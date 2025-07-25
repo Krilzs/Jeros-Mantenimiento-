@@ -264,7 +264,6 @@ export default function Pagos() {
         isClosable: true,
       });
 
-      // Podés agregar un callback para recargar la lista si querés
     } catch (err) {
       console.error(err);
     }
@@ -305,7 +304,6 @@ export default function Pagos() {
           setPaginaActual={setPaginaActual}
         />
 
-        {/* Modal para agregar movimiento */}
         <AddModal
           form={form}
           setForm={setForm}

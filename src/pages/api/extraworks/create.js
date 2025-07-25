@@ -18,7 +18,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Faltan campos obligatorios" });
   }
 
-  // Obtenemos el usuario desde el token
   const {
     data: { user },
     error: userError,

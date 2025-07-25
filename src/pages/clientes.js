@@ -5,15 +5,21 @@ import LoadingScreen from "@/components/LoadingScreen";
 import ClientesTable from "@/components/clients/ClientTable";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/lib/supabaseClient";
-import { getData, calcularEstadoPago, sortBy } from "@/utils/utils";
+import { getData, sortBy, useCustomToast } from "@/utils/utils";
 import EditarMontoModal from "@/components/clients/EditarMontoModal";
 import { useDisclosure } from "@chakra-ui/react";
 import ClientViewModal from "@/components/clients/ClientViewModal";
+import {
+  fetchClientesService,
+  editMultipleClients,
+  editClient,
+} from "@/services/clients";
 
 import ClientsActions from "@/components/clients/ClientsActions";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/router";
 export default function Clients() {
+  //Confirmacion de si hay sesion activa
   const { user, loading } = useUser();
   const router = useRouter();
 
@@ -26,7 +32,7 @@ export default function Clients() {
   const [clients, setClients] = useState([]);
   const [loadingPage, setLoading] = useState(true);
   const [filtro, setFiltro] = useState("");
-  const toast = useToast();
+  const toast = useCustomToast();
   const [clienteEditando, setClienteEditando] = useState(null);
   const [seleccionados, setSeleccionados] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -42,30 +48,15 @@ export default function Clients() {
   }
 
   async function handleGuardarMultiples(clientesActualizados) {
-    const token = await getData(supabase);
-
     try {
-      const res = await fetch("/api/clients/edit-multiple", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ clientes: clientesActualizados }),
+      const data = await editMultipleClients({
+        clientes: clientesActualizados,
       });
-
-      if (!res.ok && res.status !== 207)
-        throw new Error(data.error || "Error desconocido");
-
-      const data = await res.json();
 
       toast({
         title: "Clientes actualizados",
         description: `Se actualizaron ${data.actualizados.length} clientes`,
         status: "success",
-        duration: 4000,
-        isClosable: true,
-        position: "top",
       });
 
       fetchClientes();
@@ -76,9 +67,6 @@ export default function Clients() {
         title: "Error actualizando clientes",
         description: error.message,
         status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
       });
     }
   }
@@ -97,27 +85,10 @@ export default function Clients() {
 
   async function fetchClientes() {
     setLoading(true);
-    const token = await getData(supabase);
-    if (!user) {
-      router.push("/login");
-      return;
-    }
     try {
-      const res = await fetch("/api/clients/get", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Error desconocido");
-
-      const clientesConEstado = data.map((cliente) => ({
-        ...cliente,
-        estado_pago: calcularEstadoPago(cliente.ultimo_pago),
-      }));
-
-      setClients(clientesConEstado);
+      const data = await fetchClientesService();
+      setClients(data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching clientes:", error);
     } finally {
@@ -145,49 +116,28 @@ export default function Clients() {
   }
 
   async function handleGuardarEdicion(cliente, nuevoMonto) {
-    const token = await getData(supabase);
-
-    const res = await fetch("/api/clients/edit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
+    try {
+      const data = await editClient({
         id: cliente.id,
         montoMensual: nuevoMonto,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      toast({
-        title: "Error al actualizar monto",
-        description: data.error,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
       });
-    } else {
       toast({
         title: "Monto actualizado",
         description: `Nuevo monto: $${data.monto_mensual}`,
         status: "success",
-        duration: 4000,
-        isClosable: true,
-        position: "top",
       });
-
-      // Actualizá el cliente en tu lista
       setClients((prev) =>
         prev.map((c) =>
           c.id === cliente.id ? { ...c, monto_mensual: data.monto_mensual } : c
         )
       );
-
       onClose();
+    } catch (error) {
+      toast({
+        title: "Error al actualizar monto",
+        description: error,
+        status: "error",
+      });
     }
   }
 
@@ -233,51 +183,54 @@ export default function Clients() {
   }
 
   return (
-    <DashboardLayout>
-      <Heading color="green.700" mb={4}>
-        Clientes
-      </Heading>
-      <Text color="gray.600">
-        Maneja y controla la informacion de tus clientes.
-      </Text>
-      {loadingPage ? (
-        <LoadingScreen fullscreen={false} />
-      ) : (
-        <>
-          <ClientsActions
-            onSearch={setFiltro}
-            onClientCreated={handleClienteCreado}
-            seleccionados={seleccionados}
-            clientes={clients}
-            onGuardarMultiples={handleGuardarMultiples}
+    !loading &&
+    user && (
+      <DashboardLayout>
+        <Heading color="green.700" mb={4}>
+          Clientes
+        </Heading>
+        <Text color="gray.600">
+          Maneja y controla la informacion de tus clientes.
+        </Text>
+        {loadingPage ? (
+          <LoadingScreen fullscreen={false} />
+        ) : (
+          <>
+            <ClientsActions
+              onSearch={setFiltro}
+              onClientCreated={handleClienteCreado}
+              seleccionados={seleccionados}
+              clientes={clients}
+              onGuardarMultiples={handleGuardarMultiples}
+            />
+            <ClientesTable
+              clientes={clientesFiltrados}
+              seleccionados={seleccionados}
+              toggleSeleccion={toggleSeleccion}
+              onView={handleView}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              ordenarPor={ordenarPor}
+              ordenAscendente={ordenAscendente}
+              setOrdenarPor={setOrdenarPor}
+              setOrdenAscendente={setOrdenAscendente}
+            />
+          </>
+        )}
+        {clienteEditando && (
+          <EditarMontoModal
+            isOpen={isOpen}
+            onClose={onClose}
+            cliente={clienteEditando}
+            onSave={handleGuardarEdicion}
           />
-          <ClientesTable
-            clientes={clientesFiltrados}
-            seleccionados={seleccionados}
-            toggleSeleccion={toggleSeleccion}
-            onView={handleView}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            ordenarPor={ordenarPor}
-            ordenAscendente={ordenAscendente}
-            setOrdenarPor={setOrdenarPor}
-            setOrdenAscendente={setOrdenAscendente}
-          />
-        </>
-      )}
-      {clienteEditando && (
-        <EditarMontoModal
-          isOpen={isOpen}
-          onClose={onClose}
-          cliente={clienteEditando}
-          onSave={handleGuardarEdicion}
+        )}
+        <ClientViewModal
+          isOpen={isViewOpen}
+          onClose={handleCloseView}
+          cliente={clienteSeleccionado}
         />
-      )}
-      <ClientViewModal
-        isOpen={isViewOpen}
-        onClose={handleCloseView}
-        cliente={clienteSeleccionado}
-      />
-    </DashboardLayout>
+      </DashboardLayout>
+    )
   );
 }
