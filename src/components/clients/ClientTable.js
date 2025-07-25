@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import AddNewMonth from "./AddNewMonth";
 import { useState } from "react";
+import { formatCashNumber } from "@/utils/utils";
 
 export default function ClientesTable({
   clientes,
@@ -98,7 +99,7 @@ export default function ClientesTable({
                 <Td>{cliente.nombre}</Td>
                 <Td>{cliente.lote}</Td>
                 <Td fontWeight={"bold"} color={"brand.800"}>
-                  ${cliente.monto_mensual.toLocaleString()}
+                  {formatCashNumber(cliente.monto_mensual)}
                 </Td>
                 <Td>
                   {cliente.ultimo_pago

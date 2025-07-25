@@ -60,3 +60,20 @@ export const removeClient = async (id) => {
   if (!res.ok) throw new Error("Error al eliminar cliente");
   return res.json();
 };
+
+
+export const fetchEstadoClientes = async () => {
+  const token = await getData(supabase);
+  const res = await fetch(`${BASE_URL}/get-pay-states`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Error al obtener clientes");
+  return res.json();
+};
+

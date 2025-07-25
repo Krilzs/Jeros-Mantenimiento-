@@ -25,7 +25,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
-import { getData } from "@/utils/utils";
+import { formatCashNumber, getData } from "@/utils/utils";
 import { supabase } from "@/utils/lib/supabaseClient";
 import { AddIcon } from "@chakra-ui/icons";
 import LoadingScreen from "../LoadingScreen";
@@ -204,7 +204,7 @@ export default function TrabajosExtrasPage() {
                   <Td>{trabajo.cliente}</Td>
                   <Td>{trabajo.lote}</Td>
                   <Td>{trabajo.descripcion}</Td>
-                  <Td>${trabajo.monto_cobrado.toLocaleString()}</Td>
+                  <Td color={"green.600"}>{formatCashNumber(trabajo.monto_cobrado)}</Td>
                   <Td>{trabajo.fecha.split("-").reverse().join("/")}</Td>
                 </Tr>
               ))}

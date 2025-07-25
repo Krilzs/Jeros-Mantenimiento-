@@ -22,6 +22,7 @@ import {
 import { getData } from "@/utils/utils";
 import { supabase } from "@/utils/lib/supabaseClient";
 import { useState } from "react";
+import { formatCashNumber } from "@/utils/utils";
 
 export default function ModalHistorial({ isOpen, onClose }) {
   const [desde, setDesde] = useState("");
@@ -165,16 +166,16 @@ export default function ModalHistorial({ isOpen, onClose }) {
                   borderWidth="1px"
                 >
                   <Text color="green.600" fontWeight="bold">
-                    Total Cobro: ${totalPagos.toLocaleString("es-AR")}
+                    Total Cobro: {formatCashNumber(totalPagos)}
                   </Text>
-                  <Text color="red.500" fontWeight="bold">
-                    Total Gastos: ${totalGastos.toLocaleString("es-AR")}
+                  <Text color="red.800" fontWeight="bold">
+                    Total Gastos: {formatCashNumber(totalGastos)}
                   </Text>
                   <Text
-                    color={balance >= 0 ? "green.700" : "red.600"}
+                    color={balance >= 0 ? "green.700" : "red.800"}
                     fontWeight="bold"
                   >
-                    Balance: ${balance.toLocaleString("es-AR")}
+                    Balance: {formatCashNumber(balance)}
                   </Text>
                 </HStack>
 
@@ -205,7 +206,7 @@ export default function ModalHistorial({ isOpen, onClose }) {
                             item.tipo === "Gasto" ? "red.500" : "green.600"
                           }
                         >
-                          ${item.monto}
+                          {formatCashNumber(item.monto)}
                         </Td>
                         <Td>{item.descripcion}</Td>
                         <Td>{item.cliente ?? "—"}</Td>

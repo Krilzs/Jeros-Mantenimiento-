@@ -1,3 +1,4 @@
+import DonutCharts from "@/components/dashboard/DonutInformation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useUser } from "@/context/UserContext";
 import { Heading, Text } from "@chakra-ui/react";
@@ -22,6 +23,8 @@ export default function DashboardPage() {
       <Text color="gray.600">
         Acá vas a ver un resumen general de tus cobros, gastos y más.
       </Text>
+      <DonutCharts />
+
     </DashboardLayout>
   );
 }

@@ -34,6 +34,13 @@ export function sortBy(array, campo, orden = "asc") {
   });
 }
 
+
+export function formatCashNumber(num) {
+    return num.toLocaleString("es-AR", {
+      style: "currency",
+      currency: "ARS",
+    });
+  };
 //Una configuracion general para las notificaciones que popeen
 export function useCustomToast() {
   const toast = useToast();

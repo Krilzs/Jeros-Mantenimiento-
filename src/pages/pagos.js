@@ -1,29 +1,4 @@
-import {
-  Box,
-  Button,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Text,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Select,
-  FormControl,
-  FormLabel,
-  useToast,
-  Heading,
-  Checkbox,
-} from "@chakra-ui/react";
+import { Box, Text, useDisclosure, useToast, Heading } from "@chakra-ui/react";
 import ModalHistorial from "../components/payments/HistoryPaymentsModal";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import { getData } from "@/utils/utils";
@@ -283,7 +258,7 @@ export default function Pagos() {
     );
   }
 
-  return (
+  return !loading && user && (
     <DashboardLayout>
       <Heading color="green.700" mb={5}>
         Cobros y Gastos
